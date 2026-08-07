@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+
+@theme {
+  /* Light-mode-first CRM palette */
+  --color-brand-50: #eef4ff;
+  --color-brand-100: #dbe6fe;
+  --color-brand-500: #4f6ef7;
+  --color-brand-600: #3f56e8;
+  --color-brand-700: #3445c9;
+
+  --color-surface: #ffffff;
+  --color-surface-muted: #f6f8fb;
+  --color-border-subtle: #e6e9f0;
+
+  --color-status-pending: #f59e0b;
+  --color-status-review: #3b82f6;
+  --color-status-shortlisted: #8b5cf6;
+  --color-status-interview: #06b6d4;
+  --color-status-selected: #10b981;
+  --color-status-rejected: #ef4444;
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 32px rgba(31, 41, 55, 0.06);
+}
+
+.dark .glass-panel {
+  background: rgba(23, 25, 35, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
