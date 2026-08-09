@@ -19,17 +19,20 @@ Built as part of the Technical Interview Task for the Frontend / Full Stack Deve
  
 ---
  
+
 ## 📸 Screenshots
- 
+
 ### Landing Page
-![Landing Page](./images/landingPage.png)
- 
+
+<img src="./images/landingPage.png" alt="Landing Page" width="350">
+
 ### Dashboard Overview
-![Overview](./images/overview.png)
- 
+
+<img src="./images/overview.png" alt="Dashboard Overview" width="350">
+
 ### Applications Table
-![Applications](./images/applications.png)
- 
+
+<img src="./images/application.png" alt="Applications Table" width="350">
 
  
 ---
