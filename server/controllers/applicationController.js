@@ -184,6 +184,11 @@ export const updateApplicationStatus = async (req, res) => {
 // @desc    Delete an application
 // @route   DELETE /api/applications/:id
 export const deleteApplication = async (req, res) => {
+   if (req.admin.role !== 'super-admin') {
+    return res.status(403).json({
+      message: 'Only super-admins can delete applications',
+    });
+  }
   try {
     const application = await Application.findByIdAndDelete(req.params.id);
     if (!application) {
@@ -261,6 +266,45 @@ export const deleteNote = async (req, res) => {
 
     await application.save();
     res.json({ message: 'Note deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
+// @desc    Get applications received per day (last 14 days) for analytics chart
+// @route   GET /api/applications/analytics
+export const getApplicationAnalytics = async (req, res) => {
+  try {
+    const fourteenDaysAgo = new Date();
+    fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 13);
+    fourteenDaysAgo.setHours(0, 0, 0, 0);
+
+    const results = await Application.aggregate([
+      { $match: { dateApplied: { $gte: fourteenDaysAgo } } },
+      {
+        $group: {
+          _id: { $dateToString: { format: '%Y-%m-%d', date: '$dateApplied' } },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    // Fill in missing days with 0 so the chart has a continuous 14-day axis
+    const dateMap = results.reduce((acc, r) => ({ ...acc, [r._id]: r.count }), {});
+    const timeline = [];
+    for (let i = 0; i < 14; i++) {
+      const d = new Date(fourteenDaysAgo);
+      d.setDate(d.getDate() + i);
+      const key = d.toISOString().split('T')[0];
+      timeline.push({
+        date: d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }),
+        applications: dateMap[key] || 0,
+      });
+    }
+
+    res.json(timeline);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

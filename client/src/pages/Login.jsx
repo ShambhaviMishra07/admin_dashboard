@@ -1,5 +1,6 @@
+
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, Lock, Loader2, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -18,37 +19,50 @@ const Login = () => {
     e.preventDefault();
     setError('');
     setIsSubmitting(true);
+
     try {
       await login(email, password);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      setError(
+        err.response?.data?.message || 'Login failed. Please try again.'
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-surface-muted px-4">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-brand-50 via-white to-violet-50 flex items-center justify-center px-4">
+      {/* Background decorative blobs */}
+      <div className="absolute top-[-10%] left-[-10%] h-96 w-96 rounded-full bg-brand-400/20 blur-3xl" />
+      <div className="absolute bottom-[-10%] right-[-10%] h-96 w-96 rounded-full bg-violet-400/20 blur-3xl" />
+
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: 'easeOut' }}
-        className="glass-panel w-full max-w-md rounded-2xl p-8"
+        className="relative z-10 w-full max-w-md rounded-2xl p-8 bg-white/70 backdrop-blur-xl border border-white/60 shadow-2xl shadow-gray-200/50"
       >
-        <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 h-12 w-12 rounded-xl bg-brand-500 flex items-center justify-center">
-            <span className="text-white font-bold text-lg">M</span>
-          </div>
-          <h1 className="text-xl font-semibold text-gray-900">MamRaj Nexus Academy</h1>
-          <p className="text-sm text-gray-500 mt-1">Admin Dashboard Login</p>
+        <div className="text-center mb-6">
+          <h1 className="text-2xl font-bold text-gray-900">
+            MamRaj Nexus Academy
+          </h1>
+
+          <p className="text-sm text-gray-500 mt-1">
+            Admin Dashboard Login
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              Email
+            </label>
+
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+
               <input
                 type="email"
                 required
@@ -61,9 +75,13 @@ const Login = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              Password
+            </label>
+
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+
               <input
                 type={showPassword ? 'text' : 'password'}
                 required
@@ -72,12 +90,17 @@ const Login = () => {
                 placeholder="••••••••"
                 className="w-full pl-10 pr-10 py-2.5 rounded-lg border border-border-subtle bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition"
               />
+
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
               >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
               </button>
             </div>
           </div>
@@ -97,13 +120,28 @@ const Login = () => {
             disabled={isSubmitting}
             className="w-full flex items-center justify-center gap-2 bg-brand-500 hover:bg-brand-600 text-white text-sm font-medium py-2.5 rounded-lg transition disabled:opacity-60"
           >
-            {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
+            {isSubmitting && (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            )}
+
             {isSubmitting ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
+
+        {/* Sign Up Link */}
+        <p className="text-center text-sm text-gray-500 mt-6">
+          Don't have an account?{' '}
+          <Link
+            to="/signup"
+            className="text-brand-600 font-medium hover:text-brand-700"
+          >
+            Sign Up
+          </Link>
+        </p>
       </motion.div>
     </div>
   );
 };
 
 export default Login;
+

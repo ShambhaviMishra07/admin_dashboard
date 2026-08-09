@@ -3,6 +3,7 @@ import {
   createApplication,
   getApplications,
   getApplicationStats,
+  getApplicationAnalytics,
   getApplicationById,
   updateApplication,
   updateApplicationStatus,
@@ -17,6 +18,7 @@ const router = express.Router();
 
 // Stats must come before /:id to avoid route collision
 router.get('/stats', protect, getApplicationStats);
+router.get('/analytics', protect, getApplicationAnalytics);
 
 router.route('/')
   .get(protect, getApplications)

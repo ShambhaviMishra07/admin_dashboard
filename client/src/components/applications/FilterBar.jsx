@@ -46,12 +46,12 @@ return (
     >
       {STATUS_OPTIONS.map((s) => (
         <option key={s} value={s}>
-          {s === 'All' ? 'All Statuses' : s}
+          {s === 'All' ? 'All Status' : s}
         </option>
       ))}
     </select>
 
-   ```jsx
+   
 {/* Role filter */}
 <select
   value={filters.role}

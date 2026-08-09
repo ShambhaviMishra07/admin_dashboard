@@ -20,6 +20,8 @@ export const updateNote = (id, noteId, text) =>
 export const deleteNote = (id, noteId) =>
   api.delete(`/applications/${id}/notes/${noteId}`).then((res) => res.data);
 
+export const getAnalytics = () => api.get('/applications/analytics').then((res) => res.data);
+
 export const getAllApplicationsForExport = (filters = {}) =>
   api
     .get('/applications', { params: { ...filters, limit: 1000, page: 1 } })

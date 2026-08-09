@@ -8,26 +8,30 @@ import {
   CheckCircle2,
   XCircle,
 } from 'lucide-react';
-import { getStats } from '../services/applicationService';
+import { getStats, getAnalytics } from '../services/applicationService';
 import StatCard from '../components/dashboard/StatCard';
+import ApplicationsTrendChart from '../components/dashboard/ApplicationsTrendChart';
+import StatusDistributionChart from '../components/dashboard/StatusDistributionChart';
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
+  const [trend, setTrend] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchStats = async () => {
+    const fetchAll = async () => {
       try {
-        const data = await getStats();
-        setStats(data);
+        const [statsData, trendData] = await Promise.all([getStats(), getAnalytics()]);
+        setStats(statsData);
+        setTrend(trendData);
       } catch (err) {
         setError('Failed to load dashboard stats.');
       } finally {
         setLoading(false);
       }
     };
-    fetchStats();
+    fetchAll();
   }, []);
 
   const cards = stats
@@ -47,15 +51,21 @@ const Dashboard = () => {
       ]
     : [];
 
- if (loading) {
+  if (loading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        {Array.from({ length: 7 }).map((_, i) => (
-          <div
-            key={i}
-            className="h-28 rounded-xl bg-white dark:bg-gray-900 border border-border-subtle dark:border-white/10 animate-pulse"
-          />
-        ))}
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          {Array.from({ length: 7 }).map((_, i) => (
+            <div
+              key={i}
+              className="h-28 rounded-xl bg-white dark:bg-gray-900 border border-border-subtle dark:border-white/10 animate-pulse"
+            />
+          ))}
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="h-72 rounded-xl bg-white dark:bg-gray-900 border border-border-subtle dark:border-white/10 animate-pulse" />
+          <div className="h-72 rounded-xl bg-white dark:bg-gray-900 border border-border-subtle dark:border-white/10 animate-pulse" />
+        </div>
       </div>
     );
   }
@@ -64,14 +74,20 @@ const Dashboard = () => {
     return <p className="text-sm text-status-rejected">{error}</p>;
   }
 
-return (
+  return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
         {cards.map((card, i) => (
           <StatCard key={card.label} {...card} delay={i * 0.04} />
         ))}
       </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <ApplicationsTrendChart data={trend} />
+        <StatusDistributionChart stats={stats} />
+      </div>
     </div>
   );
 };
+
 export default Dashboard;
