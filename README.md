@@ -167,6 +167,80 @@ mamraj-admin-dashboard/
 ```
  
 ---
+
+
+## 🚀 Local Setup Instructions
+
+### Prerequisites
+- Node.js (v18 or higher)
+- A MongoDB connection string (local MongoDB or a free MongoDB Atlas cluster)
+
+### 1. Clone the repository
+
+```
+git clone https://github.com/your-username/mamraj-nexus-admin-dashboard.git
+cd mamraj-nexus-admin-dashboard
+```
+
+### 2. Backend setup
+
+```
+cd server
+npm install
+```
+
+Create a `.env` file inside `server/`:
+
+```
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret_here
+ADMIN_INVITE_CODE=your-chosen-bootstrap-invite-code
+CLIENT_URL=http://localhost:5173
+```
+
+Run the backend:
+
+```
+npm run dev
+```
+
+Server runs at `http://localhost:5000`. Verify with `http://localhost:5000/api/health`.
+
+### 3. Frontend setup
+
+```
+cd ../client
+npm install
+```
+
+Create a `.env` file inside `client/`:
+
+```
+VITE_API_URL=http://localhost:5000/api
+```
+
+Run the frontend:
+
+```
+npm run dev
+```
+
+App runs at `http://localhost:5173`.
+
+### 4. Create your first admin account
+
+1. Visit `http://localhost:5173`
+2. Click **Sign Up**
+3. Enter the `ADMIN_INVITE_CODE` value from your `.env` file
+4. This first account is automatically assigned the `super-admin` role
+
+### 5. (Optional) Seed test applications
+
+Use Postman against `POST /api/applications` to create test candidates. See the API Reference section below for the exact endpoint and required fields.
+
+---
+
  
 ## 🔑 Environment Variables Reference
  
