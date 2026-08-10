@@ -9,18 +9,24 @@ import {
   GraduationCap,
   FileText,
   Link as LinkIcon,
+  Trash2,
 } from 'lucide-react';
 
-import { getApplicationById } from '../services/applicationService';
+import { getApplicationById, deleteApplication } from '../services/applicationService';
 import StatusDropdown from '../components/profile/StatusDropdown';
 import NotesPanel from '../components/profile/NotesPanel';
+import { useAuth } from '../context/AuthContext';
 
 const StudentProfile = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  const { admin } = useAuth();
+
   const [application, setApplication] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [deleting, setDeleting] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   useEffect(() => {
     const fetchApp = async () => {
@@ -40,17 +46,32 @@ const StudentProfile = () => {
     fetchApp();
   }, [id]);
 
+  const handleDelete = async () => {
+    setDeleting(true);
+
+    try {
+      await deleteApplication(application._id);
+      navigate('/dashboard/applications');
+    } catch (err) {
+      alert(
+        err.response?.data?.message ||
+          'Failed to delete application'
+      );
+      setDeleting(false);
+    }
+  };
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[300px]">
-        <p className="text-sm text-gray-500">Loading application...</p>
+      <div className="flex items-center justify-center py-12 text-sm text-gray-500">
+        Loading application...
       </div>
     );
   }
 
   if (!application) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-5">
         <button
           onClick={() => navigate(-1)}
           className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 transition-colors"
@@ -60,7 +81,9 @@ const StudentProfile = () => {
         </button>
 
         <div className="bg-white rounded-xl border border-border-subtle p-6">
-          <p className="text-gray-600">Application not found.</p>
+          <p className="text-gray-600">
+            Application not found.
+          </p>
         </div>
       </div>
     );
@@ -112,6 +135,46 @@ const StudentProfile = () => {
               }
             />
           </div>
+
+          {/* Delete Application - Super Admin Only */}
+          {admin?.role === 'super-admin' && (
+            <div className="mt-4 pt-4 border-t border-border-subtle dark:border-white/10">
+              {!confirmDelete ? (
+                <button
+                  onClick={() => setConfirmDelete(true)}
+                  className="flex items-center gap-2 text-sm text-status-rejected hover:bg-red-50 dark:hover:bg-red-500/10 px-3 py-2 rounded-lg transition-colors w-full"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  Delete Application
+                </button>
+              ) : (
+                <div className="space-y-2">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    This action cannot be undone. Delete this application?
+                  </p>
+
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handleDelete}
+                      disabled={deleting}
+                      className="flex-1 px-3 py-2 rounded-lg bg-status-rejected text-white text-sm font-medium hover:bg-red-600 disabled:opacity-60 transition-colors"
+                    >
+                      {deleting
+                        ? 'Deleting...'
+                        : 'Confirm Delete'}
+                    </button>
+
+                    <button
+                      onClick={() => setConfirmDelete(false)}
+                      className="px-3 py-2 rounded-lg border border-border-subtle dark:border-white/10 text-sm text-gray-600 dark:text-gray-300 hover:bg-surface-muted dark:hover:bg-white/10 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
 
           <div className="space-y-3 text-sm">
             <div className="flex items-center gap-2.5 text-gray-600">
@@ -182,14 +245,13 @@ const StudentProfile = () => {
 
                 <p className="text-gray-800 font-medium">
                   {application.dateApplied
-                    ? new Date(application.dateApplied).toLocaleDateString(
-                        'en-IN',
-                        {
-                          day: '2-digit',
-                          month: 'short',
-                          year: 'numeric',
-                        }
-                      )
+                    ? new Date(
+                        application.dateApplied
+                      ).toLocaleDateString('en-IN', {
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric',
+                      })
                     : 'N/A'}
                 </p>
               </div>
@@ -242,4 +304,5 @@ const StudentProfile = () => {
 };
 
 export default StudentProfile;
+
 

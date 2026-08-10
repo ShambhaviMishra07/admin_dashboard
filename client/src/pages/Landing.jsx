@@ -161,7 +161,7 @@ const Landing = () => {
 
     
 {/* Product Preview Section */}
-```jsx
+
 <div className="relative overflow-hidden bg-gradient-to-br from-brand-50 via-white to-violet-50">
 
   {/* Dot grid texture so gradient areas don't look empty */}

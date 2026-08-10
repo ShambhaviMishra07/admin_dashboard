@@ -22,6 +22,10 @@ export const deleteNote = (id, noteId) =>
 
 export const getAnalytics = () => api.get('/applications/analytics').then((res) => res.data);
 
+export const deleteApplication = (id) =>
+  api.delete(`/applications/${id}`).then((res) => res.data);
+
+
 export const getAllApplicationsForExport = (filters = {}) =>
   api
     .get('/applications', { params: { ...filters, limit: 1000, page: 1 } })
