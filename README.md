@@ -12,8 +12,8 @@ Built as part of the Technical Interview Task for the Frontend / Full Stack Deve
  
 | | URL |
 |---|---|
-| **Live App (Vercel)** | `https://your-app-name.vercel.app` |
-| **Backend API (Render)** | `https://your-server-name.onrender.com` |
+| **Live App (Vercel)** | `admin-dashboard-clay19.vercel.app` |
+| **Backend API (Render)** | `https://admin-dashboard-qzun.onrender.com/api` |
 | **GitHub Repository** | `https://github.com/ShambhaviMishra07/admin_dashboard` |
  
  
