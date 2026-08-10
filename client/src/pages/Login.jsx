@@ -5,6 +5,8 @@ import { motion } from 'framer-motion';
 import { Mail, Lock, Loader2, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
+
+//This is login logic
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
