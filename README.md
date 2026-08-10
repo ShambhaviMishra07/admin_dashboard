@@ -66,7 +66,6 @@ Built as part of the Technical Interview Task for the Frontend / Full Stack Deve
  
 ### Additional Features (beyond the brief)
  
-- **Public "Apply" page** (`/apply`) — a real application form so the dashboard has an actual intake flow, not just Postman-seeded data.
 - **Landing page** — glassmorphism marketing page with feature highlights, product preview, and CTAs into Sign In / Sign Up.
 - **Invite-only registration** — signup requires an invite code to prevent unauthorized admin accounts.
 - **Database-backed, rotatable invite code** — super-admins can view and regenerate the invite code directly from Settings, so access can be granted (e.g. to a mentor for evaluation) without redeploying.
@@ -92,6 +91,53 @@ Built as part of the Technical Interview Task for the Frontend / Full Stack Deve
 - Frontend: Vercel
 - Backend: Render
 - Database: MongoDB Atlas
+---
+
+## 🏗 System Architecture
+
+```mermaid
+flowchart LR
+    subgraph Client["Client — Vercel"]
+        A[React + Vite<br/>Tailwind CSS]
+    end
+
+    subgraph Server["Server — Render"]
+        B[Express.js API]
+        C[JWT Auth Middleware]
+    end
+
+    subgraph Database["Database — MongoDB Atlas"]
+        D[(Admin Collection)]
+        E[(Application Collection)]
+        F[(Settings Collection)]
+    end
+
+    A -- "REST API calls (Axios)" --> B
+    B --> C
+    C --> D
+    B --> E
+    B --> F
+```
+
+The frontend is a fully static React SPA deployed on Vercel. It communicates with an Express REST API on Render over HTTPS, authenticated via JWT tokens. The API talks to a MongoDB Atlas cluster for all persistent data — admins, applications, and app-wide settings (like the invite code).
+
+## 🔄 Application Status Flow
+```mermaid
+stateDiagram-v2
+    [*] --> Pending: Candidate applies
+    Pending --> UnderReview: Admin begins review
+    UnderReview --> Shortlisted: Meets criteria
+    UnderReview --> Rejected: Does not meet criteria
+    Shortlisted --> InterviewScheduled: Interview set up
+    InterviewScheduled --> Selected: Interview passed
+    InterviewScheduled --> Rejected: Interview not cleared
+    Shortlisted --> Rejected: Not moving forward
+    Selected --> [*]
+    Rejected --> [*]
+```
+
+Every application moves through this pipeline, enforced at the schema level via a MongoDB enum — an admin can only ever set a status to one of these six defined stages.
+
 ---
  
 ## 📁 Project Structure
